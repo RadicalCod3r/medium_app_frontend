@@ -1,12 +1,22 @@
 import Head from 'next/head';
 import Button from '../components/button';
 import Navbar from '../components/navbar';
-import axios from 'axios';
-import { useEffect } from 'react';
-import TrendingPost from '../components/trending';
+import TrendingArticle from '../components/trending';
+import { wrapper } from '../redux/store';
+import { fetchArticlesStart, fetchTrendingStart } from '../redux/actions/articleActions';
+import { END } from 'redux-saga';
+import { useSelector } from 'react-redux';
+import Article from '../components/article';
+import InfiniteArticleList from '../components/infinite-article-list';
 
 
-export default function Home({ blogPosts, trendingPosts }) {
+export default function Home() {
+  const { trending, error:errorTrending } = useSelector(state => state.trendingList);
+  const { articles, error:errorArticles } = useSelector(state => state.articleList);
+
+  console.log(articles);
+  console.log(trending);
+
   return (
     <div>
       <Navbar />
@@ -19,7 +29,7 @@ export default function Home({ blogPosts, trendingPosts }) {
           </div>
         </div>
       </section>
-      <section id="trending" className="py-10 px-6 flex flex-col ">
+      <section id="trending" className="py-10 px-6 flex flex-col border-b border-gray-300">
         <div className="container mx-auto">
           <div className="flex items-center">
             <span className='rounded-full border-2 border-gray-900 w-5 h-5 flex justify-center items-center'>
@@ -31,10 +41,17 @@ export default function Home({ blogPosts, trendingPosts }) {
           </div>          
           <div className="flex flex-col mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {
-              trendingPosts?.slice(0, 6).map((post, i) => (
-                <TrendingPost post={post} i={i} />
+              !errorTrending && trending?.data?.slice(0, 6).map((article, i) => (
+                <TrendingArticle key={article.id} article={article} i={i} />
               ))
             }
+          </div>
+        </div>
+      </section>
+      <section id="main" className="px-6">
+        <div className="container mx-auto">
+          <div className="py-6 flex flex-col w-full lg:w-2/3">
+            <InfiniteArticleList data={articles.data} count={articles.count} />
           </div>
         </div>
       </section>
@@ -42,23 +59,10 @@ export default function Home({ blogPosts, trendingPosts }) {
   );
 }
 
-export const getStaticProps = async () => {
-  const posts = 
-    await axios
-      .get('http://127.0.0.1:8000/api/v1/posts/list/')
-      .then(res => res.data)
-      .catch(err => err);
+export const getStaticProps = wrapper.getStaticProps((store) => async ({ req, res }) => {
+  await store.dispatch(fetchArticlesStart());
+  await store.dispatch(fetchTrendingStart());
+  await store.dispatch(END);
+  await store.sagaTask.toPromise();
 
-  const trendingPosts = 
-    await axios
-      .get('http://127.0.0.1:8000/api/v1/posts/list/trending/')
-      .then(res => res.data)
-      .catch(err => err);
-
-  return {
-    props: {
-      blogPosts: posts,
-      trendingPosts
-    }
-  }
-}
+});
