@@ -19,7 +19,7 @@ const TrendingArticle = ({ article, i }) => {
                     { article.writer.username }
                     </Link>
                 </div>
-                <Link href={`/posts/${article.id}/${article.slug}/`} className="font-bold text-sm mt-2 leading-tight">
+                <Link href={`/articles/${article.id}/${article.slug}/`} className="font-bold text-sm mt-2 leading-tight">
                     { article.title }
                 </Link>
                 <div className='mt-2 flex items-center text-gray-500 text-xs'>

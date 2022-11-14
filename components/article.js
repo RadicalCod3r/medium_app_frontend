@@ -17,7 +17,7 @@ const Article = ({ article }) => {
                         { article.writer.username }
                     </Link>
                 </div>
-                <Link href={`/posts/${article.id}/${article.slug}/`} className={`font-bold text-sm mt-2 leading-tight ${classes.wrapText}`}>
+                <Link href={`/articles/${article.id}/${article.slug}/`} className={`font-bold text-sm mt-2 leading-tight ${classes.wrapText}`}>
                     { article.title }
                 </Link>
                 <div className="text-gray-500 text-sm">

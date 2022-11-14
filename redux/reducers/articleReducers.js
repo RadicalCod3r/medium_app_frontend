@@ -21,3 +21,14 @@ export const trendingListReducer = (state = { trending: null, error: null }, act
             return state;
     }
 }
+
+export const articleDetailReducer = (state = { article: null, error: null }, action) => {
+    switch (action.type) {
+        case constants.FETCH_ARTICLE_DETAIL_SUCCEED:
+            return { ...state, article: action.payload };
+        case constants.FETCH_ARTICLE_DETAIL_FAILED:
+            return { ...state, error: action.payload };
+        default:
+            return state;
+    }
+}

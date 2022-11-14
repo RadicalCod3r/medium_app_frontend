@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Button from '../components/button';
+import CustomLink from '../components/custom-link';
 import Navbar from '../components/navbar';
 import TrendingArticle from '../components/trending';
 import { wrapper } from '../redux/store';
@@ -19,13 +19,13 @@ export default function Home() {
 
   return (
     <div>
-      <Navbar />
-      <section id="hero" className="bg-yellow-500 flex flex-col justify-center px-6 border-b border-gray-900" style={{ height: '60vh' }}>
+      <Navbar home />
+      <section id="hero" className="bg-yellow-500 flex flex-col justify-center px-6 border-b border-gray-900" style={{ height: '60vh', marginTop: '70px' }}>
         <div className="sm:w-3/4 lg:w-1/2 mx-auto sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
           <div>
             <h1 className='font-semibold text-5xl sm:text-6xl tracking-tight'>Stay Curious.</h1>
             <p className='text-gray-800 text-xl font-semibold leading-tight my-7'>Discover stories, thinking, and expertise from writers on any topic.</p>
-            <Button href='#' hoverable>Start reading</Button>
+            <CustomLink href='#' hoverable>Start reading</CustomLink>
           </div>
         </div>
       </section>
@@ -51,7 +51,11 @@ export default function Home() {
       <section id="main" className="px-6">
         <div className="container mx-auto">
           <div className="py-6 flex flex-col w-full lg:w-2/3">
-            <InfiniteArticleList data={articles.data} count={articles.count} />
+            {
+              !errorArticles && articles?.data && (
+                <InfiniteArticleList data={articles.data} count={articles.count} />
+              )
+            }
           </div>
         </div>
       </section>
@@ -65,4 +69,7 @@ export const getStaticProps = wrapper.getStaticProps((store) => async ({ req, re
   await store.dispatch(END);
   await store.sagaTask.toPromise();
 
+  return {
+    revalidate: 300
+  }
 });

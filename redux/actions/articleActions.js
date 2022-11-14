@@ -28,3 +28,18 @@ export const fetchTrendingFail = (error) => ({
     type: articleConstants.FETCH_TRENDING_FAILED,
     payload: error
 });
+
+export const fetchArticleDetailStart = (id) => ({
+    type: articleConstants.FETCH_ARTICLE_DETAIL_STARTED,
+    payload: id
+});
+
+export const fetchArticleDetailSuccess = (article) => ({
+    type: articleConstants.FETCH_ARTICLE_DETAIL_SUCCEED,
+    payload: article
+});
+
+export const fetchArticleDetailFail = (error) => ({
+    type: articleConstants.FETCH_ARTICLE_DETAIL_FAILED,
+    payload: error
+});

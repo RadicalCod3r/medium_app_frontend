@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import Script from 'next/script';
 import { wrapper } from '../redux/store';
+import Navbar from '../components/navbar';
 
 function MyApp({ Component, pageProps }) {
   return (

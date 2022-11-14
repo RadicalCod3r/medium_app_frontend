@@ -17,7 +17,7 @@ const InfiniteArticleList = ({ data, count }) => {
             let pageNumber = 1;
 
             if (articles.length > 0) {
-                pageNumber = calculatePageNumber(10, articles.length - 1);
+                pageNumber = calculatePageNumber(6, articles.length - 1);
             }
     
             console.log(pageNumber + 1);
