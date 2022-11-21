@@ -43,3 +43,18 @@ export const fetchArticleDetailFail = (error) => ({
     type: articleConstants.FETCH_ARTICLE_DETAIL_FAILED,
     payload: error
 });
+
+export const fetchRandomArticleListStart = (authorId) => ({
+    type: articleConstants.FETCH_RANDOM_ARTICLES_STARTED,
+    payload: authorId
+});
+
+export const fetchRandomArticleListSuccess = (articles) => ({
+    type: articleConstants.FETCH_RANDOM_ARTICLES_SUCCEED,
+    payload: articles
+});
+
+export const fetchRandomArticleListFail = (error) => ({
+    type: articleConstants.FETCH_RANDOM_ARTICLES_FAILED,
+    payload: error
+});

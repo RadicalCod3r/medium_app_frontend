@@ -5,22 +5,22 @@ import classes from './article.module.css';
 
 const API = 'http://localhost:8000';
 
-const Article = ({ article }) => {
+const Article = ({ article, minimized }) => {
     return (
         <div className="flex items-center justify-between mb-5 xl:mb-10">
             <div className="w-3/4 lg:w-1/2 flex flex-col">
                 <div className="flex flex-row items-center">
-                    <Link href={`/users/${article.writer.username}`} className="rounded-full w-8 h-8 border border-gray-600 overflow-hidden">
-                        <Image className="object-center object-cover" src={`${API}${article.writer.image}`} alt={article.writer.username} width={72} height={72} />
+                    <Link href={`/users/${article.writer.id}`} className="rounded-full w-8 h-8 border border-gray-600 overflow-hidden">
+                        <Image className="object-center object-cover" src={`${API}${article.writer.image}`} alt={article.writer.name} width={72} height={72} />
                     </Link>
-                    <Link href={`/users/${article.writer.username}`} className="text-xs text-gray-900 font-semibold ml-2">
-                        { article.writer.username }
+                    <Link href={`/users/${article.writer.id}`} className="text-xs text-gray-900 font-semibold ml-2">
+                        { article.writer.name }
                     </Link>
                 </div>
                 <Link href={`/articles/${article.id}/${article.slug}/`} className={`font-bold text-sm mt-2 leading-tight ${classes.wrapText}`}>
                     { article.title }
                 </Link>
-                <div className="text-gray-500 text-sm">
+                <div className={`${minimized === true && 'hidden'} text-gray-500 text-sm`}>
                     { article.caption }
                 </div>
                 <div className='mt-2 flex items-center text-gray-500 text-xs'>

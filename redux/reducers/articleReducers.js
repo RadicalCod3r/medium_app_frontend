@@ -32,3 +32,14 @@ export const articleDetailReducer = (state = { article: null, error: null }, act
             return state;
     }
 }
+
+export const randomArticleListReducer = (state = { articles: null, error: null }, action) => {
+    switch (action.type) {
+        case constants.FETCH_RANDOM_ARTICLES_SUCCEED:
+            return { ...state, articles: action.payload };
+        case constants.FETCH_RANDOM_ARTICLES_FAILED:
+            return { ...state, error: action.payload };
+        default:
+            return state;
+    }
+}

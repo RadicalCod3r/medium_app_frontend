@@ -9,6 +9,9 @@ import {
 
     fetchArticleDetailSuccess,
     fetchArticleDetailFail,
+
+    fetchRandomArticleListSuccess,
+    fetchRandomArticleListFail,
 } from '../actions/articleActions';
 import axios from 'axios';
 
@@ -42,6 +45,15 @@ function* fetchDetailAsync(action) {
     }
 }
 
+function* fetchRandomAsync(action) {
+    try {
+        const { data } = yield axios.get(`${BASE_URL}/random-posts-by-authorid/${action.payload}/`);
+        yield put(fetchRandomArticleListSuccess(data));
+    } catch (error) {
+        yield put(fetchRandomArticleListFail(error))
+    }
+}
+
 function* articleListSaga() {
     yield takeEvery(constants.FETCH_ARTICLES_STARTED, fetchArticlesAsync);
 }
@@ -54,11 +66,16 @@ function* articleDetailSaga() {
     yield takeEvery(constants.FETCH_ARTICLE_DETAIL_STARTED, fetchDetailAsync);
 }
 
+function* randomArticleListSaga() {
+    yield takeEvery(constants.FETCH_RANDOM_ARTICLES_STARTED, fetchRandomAsync);
+}
+
 function* articleSaga() {
     yield all([
         call(articleListSaga),
         call(trendingListSaga),
         call(articleDetailSaga),
+        call(randomArticleListSaga),
     ]);
 }
 

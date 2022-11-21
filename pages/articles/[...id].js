@@ -2,42 +2,53 @@ import Navbar from '../../components/navbar';
 import Link from 'next/link';
 import Image from 'next/image';
 import { wrapper } from '../../redux/store';
-import { fetchArticleDetailStart } from '../../redux/actions/articleActions';
+import { fetchArticleDetailStart, fetchRandomArticleListStart } from '../../redux/actions/articleActions';
 import { END } from 'redux-saga';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import CustomButton from '../../components/custom-button';
 import normalizeDate from '../../utilities/normalize-date';
-import HtmlMapper from 'react-html-map';
+import Article from '../../components/article';
+import { useEffect } from 'react';
 
 
 const API = 'http://localhost:8000';
 
 const ArticleDetailPage = () => {
-    const { article, error } = useSelector(state => state.articleDetail);
+    const dispatch = useDispatch();
+
+    const { article, error:errorDetail } = useSelector(state => state.articleDetail);
+    const { articles:randomArticles, error:errorRandom } = useSelector(state => state.randomArticleList);
+
     console.log(article);
 
     const searchHandler = (e) => {
         e.preventDefault();
     }
 
+    useEffect(() => {
+        if (!errorDetail && article !== null && article !== {}) {
+            dispatch(fetchRandomArticleListStart(article?.writer?.id));
+        }
+    }, [article,]);
+
     return (
         <div>
             <Navbar />
-            { !error && article && article?.id && (
+            { !errorDetail && article && article?.id && (
                 <div className="w-full">
                     <div className="lg:w-3/4">
                         <div className="container mx-auto py-20 px-5 sm:px-10 lg:py-5 max-w-3xl lg:max-w-xl xl:max-w-2xl">
                             <div className="flex flex-col">
                                 <div className="flex flex-row items-center justify-between">
                                     <div className="flex flex-row items-center">
-                                        <Link href={`/users/${article.writer.username}`} className="rounded-full w-12 h-12 border border-gray-600 overflow-hidden">
-                                            <Image src={`${API}${article.writer.image}`} alt={article.writer.username} width={72} height={72}/>
+                                        <Link href={`/users/${article.writer.id}`} className="rounded-full w-12 h-12 border border-gray-600 overflow-hidden">
+                                            <Image src={`${API}${article.writer.image}`} alt={article.writer.name} width={72} height={72}/>
                                         </Link>
                                         <div className="flex flex-col ml-4">
                                             <div className="flex flex-row items-center">
-                                                <Link href={`/users/${article.writer.username}`} className="text-gray-900 font-semibold mr-3">
-                                                    { article.writer.username }
+                                                <Link href={`/users/${article.writer.id}`} className="text-gray-900 font-semibold mr-3">
+                                                    { article.writer.name }
                                                 </Link>
                                                 <CustomButton xs secondary hoverable>Follow</CustomButton>
                                             </div>
@@ -67,23 +78,34 @@ const ArticleDetailPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="hidden lg:block fixed top-0 right-0 bottom-0 border-l border-gray-300 lg:w-1/4">
-                        <div className="w-full h-full py-10 lg:px-4 xl:px-6">
+                    <div className="hidden lg:block fixed top-0 right-0 bottom-0 border-l border-gray-300 lg:w-1/4" style={{ overflowY: 'auto', direction: 'rtl' }}>
+                        <div className="w-full h-full py-10 lg:px-4 xl:px-6" style={{ direction: 'ltr' }}>
                             <form onSubmit={searchHandler} className="w-full border border-gray-300 rounded-full py-2 px-3 lg:text-xs xl:text-sm text-gray-900 font-semibold flex flex-row items-center">
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <i className="fa-solid fa-magnifying-glass"></i>
                                 <input type="text" placeholder="Search" className="border-none focus:outline-none pl-3" />
                             </form>
                             <div className="flex flex-col mt-10 text-left items-start">
                                 <div className="flex items-center justify-center mb-4">
                                     <Link href="/users/" className="w-20 h-20 rounded-full bg-gray-300 border border-gray-400 overflow-hidden">
-                                        <Image src={`${API}${article.writer.image}`} alt={article.writer.username} className='object-center' width={144} height={144}/>
+                                        <Image src={`${API}${article.writer.image}`} alt={article.writer.name} className='object-center' width={144} height={144}/>
                                     </Link>
                                 </div>
-                                <Link href={`/users/${article.writer.username}`} className="text-gray-900 font-semibold mx-1">
-                                    { article.writer.username }
-                                </Link>
-
-                                
+                                <div className="mx-1 flex flex-col">
+                                    <Link href={`/users/${article.writer.id}`} className="text-gray-900 font-semibold">
+                                        { article.writer.name }
+                                    </Link>
+                                    <div className="text-sm text-gray-700 my-2">{ article.writer.bio }</div>
+                                    <div className="mt-8 mb-4 text-gray-900 text-sm font-semibold">More from this author</div>
+                                    {
+                                        !errorRandom && randomArticles && (
+                                            <div className="flex flex-col">
+                                                { randomArticles.slice(0, 3).map(article => (
+                                                    <Article key={article.id} article={article} minimized />
+                                                )) }
+                                            </div>
+                                        )
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>

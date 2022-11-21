@@ -3,7 +3,8 @@ import { combineReducers } from 'redux';
 import { 
     articleListReducer,
     trendingListReducer,
-    articleDetailReducer
+    articleDetailReducer,
+    randomArticleListReducer
 } from './reducers/articleReducers';
 import { HYDRATE } from 'next-redux-wrapper';
 import createSagaMiddleware from 'redux-saga';
@@ -13,7 +14,8 @@ import rootSaga from './sagas/rootSaga';
 const combinedReducer = combineReducers({
     articleList: articleListReducer,
     trendingList: trendingListReducer,
-    articleDetail: articleDetailReducer
+    articleDetail: articleDetailReducer,
+    randomArticleList: randomArticleListReducer,
 });
 
 const rootReducer = (state, action) => {
