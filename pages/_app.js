@@ -4,6 +4,7 @@ import { wrapper } from '../redux/store';
 import Navbar from '../components/navbar';
 
 function MyApp({ Component, pageProps }) {
+
   return (
     <>
       <Script 
@@ -14,7 +15,7 @@ function MyApp({ Component, pageProps }) {
       />
       <Component {...pageProps} />
     </>
-  )
+  );
 }
 
 export default wrapper.withRedux(MyApp);

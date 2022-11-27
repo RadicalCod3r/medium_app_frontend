@@ -1,8 +1,26 @@
 import Link from 'next/link';
 import CustomLink from './custom-link';
 import classes from './navbar.module.css';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-const Navbar = ({ home, secondary }) => {
+const API = 'http://localhost:8000';
+
+const Navbar = ({ home, secondary, user }) => {
+    console.log(user);
+
+    const [clientUser, setClientUser] = useState(user);
+    
+    useEffect(() => {
+        if (!user || user !== null) {
+            if (typeof window !== 'undefined') {
+                console.log('window defined');
+                setClientUser(JSON.parse(localStorage.getItem('user')));
+            }
+        }
+    }, [user,]);
+
+
     return (
         <>
             <header className={`fixed ${home ? `top-0 left-0 right-0 border-b border-gray-900 ${secondary ? 'bg-white' : 'bg-yellow-500'}` : `${classes.sideNav} bg-white flex items-center justify-center`}`}>
@@ -12,11 +30,19 @@ const Navbar = ({ home, secondary }) => {
                             <i className="fa-brands fa-medium fa-2x"></i>
                             <span className="font-bold text-2xl mx-1">Medium</span>
                         </Link>
-                        <div>
+                        <div className="flex flex-row items-center">
                             <Link href="/" className="mr-4 text-sm text-gray-900 hidden md:inline-block">Our story</Link>
                             <Link href="/" className="mr-4 text-sm text-gray-900 hidden md:inline-block">Membership</Link>
                             <Link href="/" className="mr-4 text-sm text-gray-900 hidden md:inline-block">Write</Link>
-                            <Link href="/signin/" className="mr-4 text-sm text-gray-900 hidden sm:inline-block">Sign In</Link>
+                            {/* <div> */}
+                            { clientUser && clientUser !== null && clientUser.image && clientUser.name ? (
+                                <Link href="/profile" className="rounded-full border border-gray-600 overflow-hidden mr-4 flex items-center justify-center" style={{ width: '30px', height: '30px' }}>
+                                    <Image className="object-center object-cover" src={`${API}${clientUser.image}`} alt={clientUser.name} width={48} height={48} />
+                                </Link>
+                            ) : ( 
+                                <Link href="/signin/" className="mr-4 text-sm text-gray-900 hidden sm:inline-block">Sign In</Link>
+                            ) }
+                            {/* </div> */}
                             <CustomLink href='/signin/' sm>Get started</CustomLink>
                         </div>
                     </nav>

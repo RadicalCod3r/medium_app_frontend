@@ -6,6 +6,14 @@ import {
     articleDetailReducer,
     randomArticleListReducer
 } from './reducers/articleReducers';
+import {
+    userProfileReducer,
+    signInReducer,
+    logoutReducer,
+    phoneValidationReducer,
+    otpValidationReducer,
+    signUpReducer
+} from './reducers/userReducers';
 import { HYDRATE } from 'next-redux-wrapper';
 import createSagaMiddleware from 'redux-saga';
 import { createWrapper } from 'next-redux-wrapper';
@@ -16,6 +24,12 @@ const combinedReducer = combineReducers({
     trendingList: trendingListReducer,
     articleDetail: articleDetailReducer,
     randomArticleList: randomArticleListReducer,
+    userProfile: userProfileReducer,
+    signIn: signInReducer,
+    logout: logoutReducer,
+    phoneValidation: phoneValidationReducer,
+    otpValidation: otpValidationReducer,
+    signUp: signUpReducer,
 });
 
 const rootReducer = (state, action) => {
@@ -31,6 +45,23 @@ const rootReducer = (state, action) => {
     }
 }
 
+let userFromStorage = null;
+
+if (typeof window !== 'undefined') {
+    userFromStorage = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+}
+
+let validatedPhoneFromStorage;
+
+if (typeof window !== 'undefined') {
+    validatedPhoneFromStorage = localStorage.getItem('validatedPhone') !== undefined ? JSON.parse(localStorage.getItem('validatedPhone')) : null;
+}
+
+const initialState = {
+    signIn: { user: userFromStorage },
+    // phoneValidation: { data: validatedPhoneFromStorage },
+}
+
 const bindMiddleware = (middleware) => {
     if (process.env.NODE_ENV !== 'production') {
         const { composeWithDevTools } = require('redux-devtools-extension');
@@ -42,7 +73,11 @@ const bindMiddleware = (middleware) => {
 
 export const makeStore = (context) => {
     const sagaMiddleware = createSagaMiddleware();
-    const store = createStore(rootReducer, bindMiddleware([sagaMiddleware]));
+    const store = createStore(
+        rootReducer,
+        initialState, 
+        bindMiddleware([sagaMiddleware])
+    );
 
     store.sagaTask = sagaMiddleware.run(rootSaga);
     return store;

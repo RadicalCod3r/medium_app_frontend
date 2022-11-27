@@ -6,20 +6,22 @@ import { wrapper } from '../redux/store';
 import { fetchArticlesStart, fetchTrendingStart } from '../redux/actions/articleActions';
 import { END } from 'redux-saga';
 import { useSelector } from 'react-redux';
-import Article from '../components/article';
 import InfiniteArticleList from '../components/infinite-article-list';
+// import dynamic from 'next/dynamic';
 
+// const Navbar = dynamic(() => import('../components/navbar'), { ssr: false });
 
 export default function Home() {
   const { trending, error:errorTrending } = useSelector(state => state.trendingList);
   const { articles, error:errorArticles } = useSelector(state => state.articleList);
+  const { user, error:errorSignIn } = useSelector(state => state.signIn);
 
   console.log(articles);
   console.log(trending);
 
   return (
     <div>
-      <Navbar home />
+      <Navbar home user={user} />
       <section id="hero" className="bg-yellow-500 flex flex-col justify-center px-6 border-b border-gray-900" style={{ height: '60vh', marginTop: '70px' }}>
         <div className="sm:w-3/4 lg:w-1/2 mx-auto sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
           <div>
